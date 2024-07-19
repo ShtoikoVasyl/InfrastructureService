@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+option java_package = "edu.shtoiko.grpc.auth";
+option java_outer_classname = "AuthServiceProto";
+
+service AuthService {
+  rpc Authenticate(AuthRequest) returns (AuthResponse);
+}
+
+message AuthRequest {
+  int64 username = 1;
+  string password = 2;
+}
+
+message AuthResponse {
+  string token = 1;
+}
