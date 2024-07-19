@@ -11,11 +11,4 @@ public class TerminalResponse {
     private String name;
     private String address;
     private String signature;
-
-    public TerminalResponse(Terminal terminal) {
-        this.name = terminal.getName();
-        this.id = terminal.getId();
-        this.address = terminal.getAddress();
-        this.signature = terminal.getSignature();
-    }
 }
