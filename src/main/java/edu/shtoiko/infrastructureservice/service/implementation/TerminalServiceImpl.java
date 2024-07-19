@@ -7,9 +7,11 @@ import edu.shtoiko.infrastructureservice.repository.TerminalRepository;
 import edu.shtoiko.infrastructureservice.service.TerminalService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TerminalServiceImpl implements TerminalService {
@@ -22,7 +24,9 @@ public class TerminalServiceImpl implements TerminalService {
     public TerminalResponse create(TerminalRequest terminalRequest) {
         Terminal terminal = modelMapper.map(terminalRequest, Terminal.class);
         terminal.setSignature(encoder.generateKey());
-        return modelMapper.map(terminalRepository.save(terminal), TerminalResponse.class);
+        terminal = terminalRepository.save(terminal);
+        log.info("Created new terminal id={}", terminal.getId());
+        return modelMapper.map(terminal, TerminalResponse.class);
     }
 
     @Override
@@ -31,7 +35,10 @@ public class TerminalServiceImpl implements TerminalService {
     }
 
     public Terminal getTerminalById(long terminalId){
-        return terminalRepository.findById(terminalId).orElseThrow(EntityNotFoundException::new);
+        return terminalRepository.findById(terminalId).orElseThrow(() -> {
+            log.error("Terminal with id={} not found", terminalId);
+            return new EntityNotFoundException("Terminal with id=" + terminalId + " not found");
+        });
     }
 
     @Override
@@ -39,6 +46,4 @@ public class TerminalServiceImpl implements TerminalService {
         Terminal terminal = getTerminalById(login);
         return terminal.getPassword().equals(password);
     }
-
-
 }

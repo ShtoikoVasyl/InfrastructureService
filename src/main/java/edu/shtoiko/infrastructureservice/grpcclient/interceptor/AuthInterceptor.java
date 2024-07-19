@@ -9,8 +9,10 @@ import io.grpc.ServerCallHandler;
 import io.grpc.ServerInterceptor;
 import io.grpc.Status;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class AuthInterceptor implements ServerInterceptor {
@@ -23,13 +25,11 @@ public class AuthInterceptor implements ServerInterceptor {
     public <ReqT, RespT> ServerCall.Listener<ReqT> interceptCall(ServerCall<ReqT, RespT> call, Metadata headers, ServerCallHandler<ReqT, RespT> next) {
         String token = headers.get(Metadata.Key.of("Authorization", Metadata.ASCII_STRING_MARSHALLER));
         String methodName = call.getMethodDescriptor().getFullMethodName();
-        System.out.println(methodName);
-        System.out.println("AuthInterceptor: received call with token " + token);
-
         if (methodName.equals("AuthService/Authenticate")) {
             return next.startCall(call, headers);
         }
         if (token == null || !tokenUtil.validateToken(token)) {
+            log.error("Invalid or expired token {}", token);
             call.close(Status.UNAUTHENTICATED.withDescription("Invalid or expired token"), headers);
             return new ServerCall.Listener<ReqT>() {};
         }

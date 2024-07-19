@@ -19,7 +19,6 @@ public class JwtTokenUtil {
     private long EXPIRATION_TIME; // 2 хвилини в мілісекундах
 
     public String createToken(long terminalId) {
-        System.out.println(terminalId);
         return Jwts.builder()
                 .setSubject(String.valueOf(terminalId))
                 .setIssuedAt(new Date())
@@ -32,10 +31,8 @@ public class JwtTokenUtil {
         if (token.startsWith("Bearer ")) {
             token = token.substring(7);
         }
-        System.out.println(token);
         try {
             Jws<Claims> claims = Jwts.parser()
-//                    .setSigningKey(SECRET_KEY)
                     .setSigningKey(SECRET_KEY)
                     .parseClaimsJws(token);
 
