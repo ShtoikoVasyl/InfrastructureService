@@ -12,13 +12,4 @@ public class TerminalRequest {
     private String address;
     private String password;
     private String name;
-
-    public Terminal convertToEntity(){
-        return Terminal.builder()
-                .address(address)
-                .name(name)
-                .lastActivity(Instant.now())
-                .password(password)
-                .build();
-    }
 }

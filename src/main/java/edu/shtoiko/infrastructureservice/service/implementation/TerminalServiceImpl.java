@@ -7,6 +7,7 @@ import edu.shtoiko.infrastructureservice.repository.TerminalRepository;
 import edu.shtoiko.infrastructureservice.service.TerminalService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,18 +15,19 @@ import org.springframework.stereotype.Service;
 public class TerminalServiceImpl implements TerminalService {
     private final TerminalRepository terminalRepository;
     private final EncoderImpl encoder;
+    private final ModelMapper modelMapper;
 
 
     @Override
     public TerminalResponse create(TerminalRequest terminalRequest) {
-        Terminal terminal = terminalRequest.convertToEntity();
+        Terminal terminal = modelMapper.map(terminalRequest, Terminal.class);
         terminal.setSignature(encoder.generateKey());
-        return new TerminalResponse(terminalRepository.save(terminal));
+        return modelMapper.map(terminalRepository.save(terminal), TerminalResponse.class);
     }
 
     @Override
     public TerminalResponse getTerminalResponse(long terminalId) {
-        return new TerminalResponse(getTerminalById(terminalId));
+        return modelMapper.map(getTerminalById(terminalId), TerminalResponse.class);
     }
 
     public Terminal getTerminalById(long terminalId){
