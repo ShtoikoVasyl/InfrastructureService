@@ -16,11 +16,13 @@ import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import static edu.shtoiko.infrastructureservice.grpcclient.interceptor.AuthInterceptor.JWT_TOKEN;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TerminalServiceController {
@@ -53,6 +55,7 @@ public class TerminalServiceController {
                     .intercept(authInterceptor)
                     .build()
                     .start();
+            log.info("TerminalServer started at port:{}", port);
             server.awaitTermination();
         } catch (Exception e) {
             e.printStackTrace();
@@ -65,14 +68,26 @@ public class TerminalServiceController {
 
         @Override
         public void withdraw(TerminalServiceProto.WithdrawRequest request, StreamObserver<TerminalServiceProto.WithdrawResponse> responseObserver) {
+            String token = JWT_TOKEN.get(Context.current());
+            long username = tokenUtil.getUsernameFromToken(token);
+            log.info("Withdraw request from {} for accountNumber {}", username, request.getAccountNumber());
             String withdrawalTextResult = null;
             long approvedAmount = request.getAmount();
             try {
                 withdrawalTextResult = withdrawalService.provideWithdraw(request.getAccountNumber(), request.getPinCode(), request.getCurrencyCode(), request.getAmount());
             } catch (WithdrawalException e){
+                log.atError()
+                        .setMessage("Transaction is not allowed")
+                        .addArgument(request.getAccountNumber())
+                        .setCause(e)
+                        .log();
                 withdrawalTextResult = e.getMessage();
                 approvedAmount = 0;
             }
+            log.atInfo()
+                    .addArgument(request.getAccountNumber())
+                    .setMessage("Withdrawal request result %d".formatted(approvedAmount))
+                    .log();
             TerminalServiceProto.WithdrawResponse response = TerminalServiceProto.WithdrawResponse.newBuilder()
                     .setMessage(withdrawalTextResult)
                     .setBalance(approvedAmount)

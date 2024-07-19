@@ -9,8 +9,10 @@ import io.grpc.Context;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl extends AuthServiceGrpc.AuthServiceImplBase {
@@ -22,6 +24,7 @@ public class AuthServiceImpl extends AuthServiceGrpc.AuthServiceImplBase {
     public void authenticate(AuthServiceProto.AuthRequest request, StreamObserver<AuthServiceProto.AuthResponse> responseObserver) {
         long username = request.getUsername();
         String password = request.getPassword();
+        log.info("Auth request from terminalId={}", username);
         if (isValidUser(username, password)) {
             String token = tokenUtil.createToken(username);
             Context currentContext = Context.current();
@@ -31,10 +34,12 @@ public class AuthServiceImpl extends AuthServiceGrpc.AuthServiceImplBase {
                 AuthServiceProto.AuthResponse response = AuthServiceProto.AuthResponse.newBuilder().setToken(token).build();
                 responseObserver.onNext(response);
                 responseObserver.onCompleted();
+                log.info("TerminalId={} successfully authorized", username);
             } finally {
                 newContext.detach(previous);
             }
         } else {
+            log.error("Invalid credentials, terminalId={}", username);
             responseObserver.onError(Status.UNAUTHENTICATED.withDescription("Invalid credentials").asRuntimeException());
         }
     }

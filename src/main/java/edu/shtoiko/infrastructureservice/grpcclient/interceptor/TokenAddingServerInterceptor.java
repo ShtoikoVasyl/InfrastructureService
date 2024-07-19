@@ -9,10 +9,12 @@ import io.grpc.ServerCallHandler;
 import io.grpc.ServerInterceptor;
 import io.grpc.Status;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import static edu.shtoiko.infrastructureservice.grpcclient.interceptor.AuthInterceptor.USERNAME;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class TokenAddingServerInterceptor implements ServerInterceptor {
@@ -41,17 +43,17 @@ public class TokenAddingServerInterceptor implements ServerInterceptor {
                         String newToken = tokenUtil.createToken(username);
                         Metadata.Key<String> tokenKey = Metadata.Key.of("Authorization", Metadata.ASCII_STRING_MARSHALLER);
                         trailers.put(tokenKey, "Bearer " + newToken);
+                        log.info("TerminalId={} received new token {}", username, newToken);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
                 if (methodName.equals("AuthService/Authenticate") && status.isOk()) {
-
-
                     long username = USERNAME.get();
                     String newToken = tokenUtil.createToken(username);
                     Metadata.Key<String> tokenKey = Metadata.Key.of("Authorization", Metadata.ASCII_STRING_MARSHALLER);
                     trailers.put(tokenKey, "Bearer " + newToken);
+                    log.info("TerminalId={} received first token {}", username, newToken);
                 }
                 super.close(status, trailers);
             }
