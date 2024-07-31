@@ -15,11 +15,11 @@ public class MapperConfig {
     public ModelMapper getModelMapper(List<Converter<?, ?>> converters) {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper
-                .getConfiguration()
-                .setMatchingStrategy(MatchingStrategies.STRICT)
-                .setFieldMatchingEnabled(true)
-                .setSkipNullEnabled(true)
-                .setFieldAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PRIVATE);
+            .getConfiguration()
+            .setMatchingStrategy(MatchingStrategies.STRICT)
+            .setFieldMatchingEnabled(true)
+            .setSkipNullEnabled(true)
+            .setFieldAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PRIVATE);
 
         converters.forEach(modelMapper::addConverter);
 

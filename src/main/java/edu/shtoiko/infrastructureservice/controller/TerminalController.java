@@ -22,14 +22,14 @@ public class TerminalController {
     }
 
     @PostMapping("/{user_id}/")
-    public ResponseEntity<TerminalResponse> createTerminal(@PathVariable("user_id") long accountId, @RequestBody TerminalRequest terminalRequest){
+    public ResponseEntity<TerminalResponse> createTerminal(@PathVariable("user_id") long accountId,
+        @RequestBody TerminalRequest terminalRequest) {
         return new ResponseEntity<>(terminalService.create(terminalRequest), HttpStatus.CREATED);
     }
 
     @GetMapping("/{terminal_id}/")
-    public ResponseEntity<TerminalResponse> getTerminal(@PathVariable("terminal_id") long terminalId){
+    public ResponseEntity<TerminalResponse> getTerminal(@PathVariable("terminal_id") long terminalId) {
         return new ResponseEntity<>(terminalService.getTerminalResponse(terminalId), HttpStatus.OK);
     }
-
 
 }

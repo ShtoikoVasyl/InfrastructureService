@@ -1,4 +1,4 @@
-package edu.shtoiko.infrastructureservice.grpcclient.interceptor;
+package edu.shtoiko.infrastructureservice.terminalcontroller.grpcclient.interceptor;
 
 import edu.shtoiko.infrastructureservice.utils.JwtTokenUtil;
 import io.grpc.Context;
@@ -19,10 +19,11 @@ public class AuthInterceptor implements ServerInterceptor {
     public static final Context.Key<String> JWT_TOKEN = Context.key("jwt");
     public static final Context.Key<Long> USERNAME = Context.key("username");
 
-
     private final JwtTokenUtil tokenUtil;
+
     @Override
-    public <ReqT, RespT> ServerCall.Listener<ReqT> interceptCall(ServerCall<ReqT, RespT> call, Metadata headers, ServerCallHandler<ReqT, RespT> next) {
+    public <ReqT, RespT> ServerCall.Listener<ReqT> interceptCall(ServerCall<ReqT, RespT> call, Metadata headers,
+        ServerCallHandler<ReqT, RespT> next) {
         String token = headers.get(Metadata.Key.of("Authorization", Metadata.ASCII_STRING_MARSHALLER));
         String methodName = call.getMethodDescriptor().getFullMethodName();
         if (methodName.equals("AuthService/Authenticate")) {
@@ -31,7 +32,8 @@ public class AuthInterceptor implements ServerInterceptor {
         if (token == null || !tokenUtil.validateToken(token)) {
             log.error("Invalid or expired token {}", token);
             call.close(Status.UNAUTHENTICATED.withDescription("Invalid or expired token"), headers);
-            return new ServerCall.Listener<ReqT>() {};
+            return new ServerCall.Listener<ReqT>() {
+            };
         }
         token = token.substring(7); // Видаляємо префікс "Bearer"
         Context ctx = Context.current().withValue(JWT_TOKEN, token);

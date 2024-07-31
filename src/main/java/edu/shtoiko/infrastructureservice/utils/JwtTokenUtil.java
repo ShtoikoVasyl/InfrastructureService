@@ -16,15 +16,15 @@ public class JwtTokenUtil {
     @Value("${jwttokenutil.secretkey}")
     private String SECRET_KEY = null;
     @Value("${jwttokenutil.expirationtime}")
-    private long EXPIRATION_TIME; // 2 хвилини в мілісекундах
+    private long EXPIRATION_TIME;
 
     public String createToken(long terminalId) {
         return Jwts.builder()
-                .setSubject(String.valueOf(terminalId))
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
-                .compact();
+            .setSubject(String.valueOf(terminalId))
+            .setIssuedAt(new Date())
+            .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+            .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
+            .compact();
     }
 
     public boolean validateToken(String token) {
@@ -33,8 +33,8 @@ public class JwtTokenUtil {
         }
         try {
             Jws<Claims> claims = Jwts.parser()
-                    .setSigningKey(SECRET_KEY)
-                    .parseClaimsJws(token);
+                .setSigningKey(SECRET_KEY)
+                .parseClaimsJws(token);
 
             Date expiration = claims.getBody().getExpiration();
             return expiration.after(new Date());
@@ -45,8 +45,8 @@ public class JwtTokenUtil {
 
     public long getUsernameFromToken(String token) {
         Jws<Claims> claims = Jwts.parser()
-                .setSigningKey(SECRET_KEY)
-                .parseClaimsJws(token);
+            .setSigningKey(SECRET_KEY)
+            .parseClaimsJws(token);
         return Long.parseLong(claims.getBody().getSubject());
     }
 

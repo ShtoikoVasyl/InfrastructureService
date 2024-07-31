@@ -9,19 +9,19 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.math.BigDecimal;
 import java.time.Instant;
 
-@Document
 @Data
-//@Table(name = "transaction")
 @Builder
-public class Transaction {
-    @Id
-    private String id;
+public class WithdrawalTransaction {
+
+    private String terminalIdentifier;
+
+    private String producerIdentifier;
 
     private Instant date;
 
-    private Long receiverAccountNumber;
-
     private Long senderAccountNumber;
+
+    private int pinCode;
 
     private BigDecimal amount;
 
