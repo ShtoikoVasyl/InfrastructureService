@@ -28,7 +28,7 @@ public class WithdrawResponseHandler {
 
         TerminalServiceProto.WithdrawResponse response = TerminalServiceProto.WithdrawResponse.newBuilder()
             .setMessage(withdrawResult.getSystemComment())
-            .setBalance(withdrawResult.getAllowedAmount().longValue())
+            .setValue(withdrawResult.getAllowedAmount().longValue())
             .build();
         responseObserver.onNext(response);
         responseObserver.onCompleted();

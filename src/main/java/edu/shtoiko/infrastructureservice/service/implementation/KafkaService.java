@@ -1,6 +1,7 @@
 package edu.shtoiko.infrastructureservice.service.implementation;
 
 import edu.shtoiko.infrastructureservice.model.WithdrawResult;
+import edu.shtoiko.infrastructureservice.model.WithdrawalTransaction;
 import edu.shtoiko.infrastructureservice.service.MessageConsumerService;
 import edu.shtoiko.infrastructureservice.service.MessageProducerService;
 import edu.shtoiko.infrastructureservice.terminalcontroller.grpcclient.WithdrawResponseHandler;
@@ -19,10 +20,10 @@ public class KafkaService implements MessageProducerService, MessageConsumerServ
 
     private final WithdrawResponseHandler responseHandler;
 
-    private final KafkaTemplate<String, Object> kafkaTemplate;
+    private final KafkaTemplate<String, WithdrawalTransaction> kafkaTemplate;
 
     @Override
-    public void sendMessage(Object message) {
+    public void sendMessage(WithdrawalTransaction message) {
         kafkaTemplate.send(WITHDRAWAL_TRANSACTIONS_TOPIC, message);
     }
 

@@ -2,6 +2,7 @@ package edu.shtoiko.infrastructureservice.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.shtoiko.infrastructureservice.model.WithdrawResult;
+import edu.shtoiko.infrastructureservice.model.WithdrawalTransaction;
 import edu.shtoiko.infrastructureservice.utils.JacksonDeserializer;
 import edu.shtoiko.infrastructureservice.utils.JacksonSerializer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -33,7 +34,7 @@ public class KafkaConfig {
     }
 
     @Bean
-    public ProducerFactory<String, Object> producerFactory() {
+    public ProducerFactory<String, WithdrawalTransaction> producerFactory() {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
@@ -44,7 +45,7 @@ public class KafkaConfig {
     }
 
     @Bean
-    public KafkaTemplate<String, Object> kafkaTemplate() {
+    public KafkaTemplate<String, WithdrawalTransaction> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
 
