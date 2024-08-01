@@ -13,7 +13,7 @@ import java.time.Instant;
 @Builder
 public class WithdrawalTransaction {
 
-    private String terminalIdentifier;
+    private String requestIdentifier;
 
     private String producerIdentifier;
 

@@ -6,12 +6,16 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.math.BigDecimal;
+
 @NoArgsConstructor
 @Getter
 @Setter
 @ToString
 public class WithdrawResult {
-    private String terminalIdentifier;
+    private String requestIdentifier;
+
+    private BigDecimal allowedAmount;
 
     private String producerIdentifier;
 

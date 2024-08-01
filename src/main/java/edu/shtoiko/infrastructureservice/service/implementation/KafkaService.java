@@ -3,6 +3,7 @@ package edu.shtoiko.infrastructureservice.service.implementation;
 import edu.shtoiko.infrastructureservice.model.WithdrawResult;
 import edu.shtoiko.infrastructureservice.service.MessageConsumerService;
 import edu.shtoiko.infrastructureservice.service.MessageProducerService;
+import edu.shtoiko.infrastructureservice.terminalcontroller.grpcclient.WithdrawResponseHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -16,6 +17,8 @@ public class KafkaService implements MessageProducerService, MessageConsumerServ
     private static final String WITHDRAWAL_TRANSACTIONS_TOPIC = "withdrawal_transactions";
     private final static String WITHDRAWAL_RESULT_TOPIC = "withdraw_results";
 
+    private final WithdrawResponseHandler responseHandler;
+
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
     @Override
@@ -27,5 +30,6 @@ public class KafkaService implements MessageProducerService, MessageConsumerServ
     @KafkaListener(topics = WITHDRAWAL_RESULT_TOPIC, groupId = "${kafka.consumer.group-id}")
     public void processTransaction(WithdrawResult transaction) {
         log.info("Received withdraw result : {}", transaction.toString());
+        responseHandler.sendWithdrawResponse(transaction);
     }
 }

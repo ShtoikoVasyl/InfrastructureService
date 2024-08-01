@@ -2,7 +2,7 @@ package edu.shtoiko.infrastructureservice.terminalcontroller.grpcclient;
 
 import edu.shtoiko.grpc.TerminalServiceProto;
 import edu.shtoiko.grpc.TerminalServiceGrpc;
-import edu.shtoiko.infrastructureservice.exeptions.WithdrawalException;
+import edu.shtoiko.infrastructureservice.model.WithdrawalTransaction;
 import edu.shtoiko.infrastructureservice.terminalcontroller.TerminalServiceController;
 import edu.shtoiko.infrastructureservice.terminalcontroller.grpcclient.interceptor.AuthInterceptor;
 import edu.shtoiko.infrastructureservice.terminalcontroller.grpcclient.interceptor.TokenAddingServerInterceptor;
@@ -26,6 +26,8 @@ import static edu.shtoiko.infrastructureservice.terminalcontroller.grpcclient.in
 @Service
 @RequiredArgsConstructor
 public class TerminalServiceControllerGrpcImpl implements TerminalServiceController {
+
+    private final WithdrawResponseHandler responseHandler;
 
     private final WithdrawalServiceImpl withdrawalService;
 
@@ -70,28 +72,21 @@ public class TerminalServiceControllerGrpcImpl implements TerminalServiceControl
             log.info("Withdraw request from {} for accountNumber {}", username, request.getAccountNumber());
             String withdrawalTextResult = null;
             long approvedAmount = request.getAmount();
-            try {
-                withdrawalTextResult = withdrawalService.provideWithdraw(username, request.getAccountNumber(),
+//            try {
+            WithdrawalTransaction withdrawalTransaction =
+                withdrawalService.provideWithdraw(username, request.getAccountNumber(),
                     request.getPinCode(), request.getCurrencyCode(), request.getAmount());
-            } catch (WithdrawalException e) {
-                log.atError()
-                    .setMessage("WithdrawalTransaction is not allowed")
-                    .addArgument(request.getAccountNumber())
-                    .setCause(e)
-                    .log();
-                withdrawalTextResult = e.getMessage();
-                approvedAmount = 0;
-            }
-            log.atInfo()
-                .addArgument(request.getAccountNumber())
-                .setMessage("Withdrawal request result %d".formatted(approvedAmount))
-                .log();
-            TerminalServiceProto.WithdrawResponse response = TerminalServiceProto.WithdrawResponse.newBuilder()
-                .setMessage(withdrawalTextResult)
-                .setBalance(approvedAmount)
-                .build();
-            responseObserver.onNext(response);
-            responseObserver.onCompleted();
+            responseHandler.putResponse(withdrawalTransaction.getRequestIdentifier(), responseObserver);
+//            } catch (WithdrawalException e) {
+//                log.atError()
+//                    .setMessage("WithdrawalTransaction is not allowed")
+//                    .addArgument(request.getAccountNumber())
+//                    .setCause(e)
+//                    .log();
+//                withdrawalTextResult = e.getMessage();
+//                approvedAmount = 0;
+//            }
+
         }
 
         @Override
