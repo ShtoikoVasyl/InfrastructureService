@@ -25,12 +25,10 @@ public class Terminal {
     }
 
     @Id
-//    @IdGeneratorType(SixDigitIdGenerator.class)
     @GeneratedValue(generator = "six-digit-id-generator")
     @GenericGenerator(
-            name = "six-digit-id-generator",
-            strategy = "edu.shtoiko.infrastructureservice.utils.SixDigitIdGenerator"
-    )
+        name = "six-digit-id-generator",
+        strategy = "edu.shtoiko.infrastructureservice.utils.SixDigitIdGenerator")
     private Long id;
 
     @Column
@@ -47,5 +45,4 @@ public class Terminal {
 
     @Column
     private Instant lastActivity;
-//    private Map<String, Map<Integer, Integer>> banknotesQuantity;
 }

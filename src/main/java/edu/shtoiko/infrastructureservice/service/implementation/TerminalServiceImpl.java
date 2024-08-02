@@ -19,7 +19,6 @@ public class TerminalServiceImpl implements TerminalService {
     private final EncoderImpl encoder;
     private final ModelMapper modelMapper;
 
-
     @Override
     public TerminalResponse create(TerminalRequest terminalRequest) {
         Terminal terminal = modelMapper.map(terminalRequest, Terminal.class);
@@ -34,7 +33,7 @@ public class TerminalServiceImpl implements TerminalService {
         return modelMapper.map(getTerminalById(terminalId), TerminalResponse.class);
     }
 
-    public Terminal getTerminalById(long terminalId){
+    public Terminal getTerminalById(long terminalId) {
         return terminalRepository.findById(terminalId).orElseThrow(() -> {
             log.error("Terminal with id={} not found", terminalId);
             return new EntityNotFoundException("Terminal with id=" + terminalId + " not found");
@@ -42,7 +41,7 @@ public class TerminalServiceImpl implements TerminalService {
     }
 
     @Override
-    public boolean checkin(long login, String password){
+    public boolean checkin(long login, String password) {
         Terminal terminal = getTerminalById(login);
         return terminal.getPassword().equals(password);
     }

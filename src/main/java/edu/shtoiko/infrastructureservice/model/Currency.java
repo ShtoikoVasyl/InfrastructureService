@@ -14,16 +14,16 @@ import lombok.Setter;
 @Setter
 @Table(name = "currency")
 public class Currency {
- @Id
- @GeneratedValue(strategy = GenerationType.IDENTITY)
- private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
- @Column(name = "code", nullable = false)
- private String code;
+    @Column(name = "code", nullable = false)
+    private String code;
 
- @Column(name = "full_name", nullable = false)
- private String fullName;
+    @Column(name = "full_name", nullable = false)
+    private String fullName;
 
- @Column(name="sign", unique = true)
- private String sign;
+    @Column(name = "sign", unique = true)
+    private String sign;
 }

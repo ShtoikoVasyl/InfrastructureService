@@ -1,8 +1,8 @@
-package edu.shtoiko.infrastructureservice.grpcclient.security;
+package edu.shtoiko.infrastructureservice.terminalcontroller.grpcclient.security;
 
 import edu.shtoiko.grpc.auth.AuthServiceGrpc;
 import edu.shtoiko.grpc.auth.AuthServiceProto;
-import edu.shtoiko.infrastructureservice.grpcclient.interceptor.AuthInterceptor;
+import edu.shtoiko.infrastructureservice.terminalcontroller.grpcclient.interceptor.AuthInterceptor;
 import edu.shtoiko.infrastructureservice.utils.JwtTokenUtil;
 import edu.shtoiko.infrastructureservice.service.TerminalService;
 import io.grpc.Context;
@@ -21,7 +21,8 @@ public class AuthServiceImpl extends AuthServiceGrpc.AuthServiceImplBase {
     private final TerminalService terminalService;
 
     @Override
-    public void authenticate(AuthServiceProto.AuthRequest request, StreamObserver<AuthServiceProto.AuthResponse> responseObserver) {
+    public void authenticate(AuthServiceProto.AuthRequest request,
+        StreamObserver<AuthServiceProto.AuthResponse> responseObserver) {
         long username = request.getUsername();
         String password = request.getPassword();
         log.info("Auth request from terminalId={}", username);
@@ -31,7 +32,8 @@ public class AuthServiceImpl extends AuthServiceGrpc.AuthServiceImplBase {
             Context newContext = currentContext.withValue(AuthInterceptor.USERNAME, username);
             Context previous = newContext.attach();
             try {
-                AuthServiceProto.AuthResponse response = AuthServiceProto.AuthResponse.newBuilder().setToken(token).build();
+                AuthServiceProto.AuthResponse response =
+                    AuthServiceProto.AuthResponse.newBuilder().setToken(token).build();
                 responseObserver.onNext(response);
                 responseObserver.onCompleted();
                 log.info("TerminalId={} successfully authorized", username);
@@ -40,9 +42,11 @@ public class AuthServiceImpl extends AuthServiceGrpc.AuthServiceImplBase {
             }
         } else {
             log.error("Invalid credentials, terminalId={}", username);
-            responseObserver.onError(Status.UNAUTHENTICATED.withDescription("Invalid credentials").asRuntimeException());
+            responseObserver
+                .onError(Status.UNAUTHENTICATED.withDescription("Invalid credentials").asRuntimeException());
         }
     }
+
     private boolean isValidUser(long username, String password) {
         return terminalService.checkin(username, password);
     }

@@ -23,8 +23,8 @@ public class SixDigitIdGenerator implements IdentifierGenerator {
     private boolean isIdExists(SharedSessionContractImplementor session, long id) {
         String sql = "SELECT COUNT(*) FROM terminals WHERE id = :id";
         Long count = ((Number) session.createNativeQuery(sql)
-                .setParameter("id", id)
-                .getSingleResult()).longValue();
+            .setParameter("id", id)
+            .getSingleResult()).longValue();
         return count > 0;
     }
 }
