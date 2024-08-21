@@ -7,6 +7,7 @@ import edu.shtoiko.infrastructureservice.service.MessageProducerService;
 import edu.shtoiko.infrastructureservice.terminalcontroller.grpcclient.WithdrawResponseHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -15,8 +16,9 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class KafkaService implements MessageProducerService, MessageConsumerService {
-    private static final String WITHDRAWAL_TRANSACTIONS_TOPIC = "withdrawal_transactions";
-    private final static String WITHDRAWAL_RESULT_TOPIC = "withdraw_results";
+
+    @Value("${kafka.withdrawal.topic}")
+    private String WITHDRAWAL_TRANSACTIONS_TOPIC;
 
     private final WithdrawResponseHandler responseHandler;
 
@@ -28,7 +30,7 @@ public class KafkaService implements MessageProducerService, MessageConsumerServ
     }
 
     @Override
-    @KafkaListener(topics = WITHDRAWAL_RESULT_TOPIC, groupId = "${kafka.consumer.group-id}")
+    @KafkaListener(topics = "${kafka.withdraw-result.topic}", groupId = "${kafka.infrastructureservice.group-id}")
     public void processTransaction(WithdrawResult transaction) {
         log.info("Received withdraw result : {}", transaction.toString());
         responseHandler.sendWithdrawResponse(transaction);
