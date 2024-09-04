@@ -5,4 +5,11 @@ spring:
     active: dev
   cloud:
     config:
-      uri: http://localhost:8070
+      discovery:
+        enabled: true
+      name: infrastructureservice
+      fail-fast: true
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:8008/eureka

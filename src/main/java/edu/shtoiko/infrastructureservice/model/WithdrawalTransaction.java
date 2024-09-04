@@ -21,7 +21,7 @@ public class WithdrawalTransaction {
 
     private Long senderAccountNumber;
 
-    private int pinCode;
+    private Integer pinCode;
 
     private BigDecimal amount;
 

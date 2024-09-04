@@ -30,7 +30,7 @@ public class CurrentAccount {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column
     private Long ownerId;
@@ -39,10 +39,10 @@ public class CurrentAccount {
     private String accountName;
 
     @Column(name = "account_number")
-    private long accountNumber;
+    private Long accountNumber;
 
     @Column(name = "pin_code")
-    private short pinCode;
+    private Short pinCode;
 
     @ManyToOne
     @JoinColumn(name = "currency_id")

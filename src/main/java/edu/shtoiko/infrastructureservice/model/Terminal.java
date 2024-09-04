@@ -3,6 +3,7 @@ package edu.shtoiko.infrastructureservice.model;
 import edu.shtoiko.infrastructureservice.utils.SixDigitIdGenerator;
 import jakarta.annotation.PreDestroy;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.IdGeneratorType;
@@ -31,13 +32,16 @@ public class Terminal {
         strategy = "edu.shtoiko.infrastructureservice.utils.SixDigitIdGenerator")
     private Long id;
 
-    @Column
+    @NotNull
+    @Column(nullable = false)
     private String name;
 
-    @Column
+    @NotNull
+    @Column(nullable = false)
     private String address;
 
-    @Column
+    @NotNull
+    @Column(nullable = false)
     private String password;
 
     @Column

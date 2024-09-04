@@ -3,10 +3,12 @@ package edu.shtoiko.infrastructureservice.terminalcontroller.grpcclient;
 import edu.shtoiko.grpc.TerminalServiceProto;
 import edu.shtoiko.infrastructureservice.model.WithdrawResult;
 import io.grpc.stub.StreamObserver;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+@Slf4j
 @Service
 public class WithdrawResponseHandler {
     private final ConcurrentHashMap<String, StreamObserver<TerminalServiceProto.WithdrawResponse>> responseMap =
