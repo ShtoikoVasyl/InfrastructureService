@@ -1,0 +1,1 @@
+SELECT setval('terminals_id_seq', (SELECT MAX(id) FROM terminals));
