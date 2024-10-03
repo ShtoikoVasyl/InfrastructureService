@@ -2,14 +2,19 @@ spring:
   application:
     name: infrastructureservice
   profiles:
-    active: dev
+    active: ${ACTIVE_PROFILE:dev}
   cloud:
     config:
       discovery:
         enabled: true
       name: infrastructureservice
-      fail-fast: true
+      fail-fast: false
+      username: ${CONFIG_SERVER_USERNAME}
+      password: ${CONFIG_SERVER_PASSWORD}
 eureka:
   client:
     service-url:
-      defaultZone: http://127.0.0.1:8008/eureka
+      defaultZone: ${EUREKA_URL:http://${CONFIG_SERVER_USERNAME}:${CONFIG_SERVER_PASSWORD}@localhost:8008/eureka/}
+  instance:
+    prefer-ip-address: true
+    ip-address: ${EXTERNAL_IP}

@@ -1,13 +1,19 @@
 package edu.shtoiko.infrastructureservice.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "roles")
-public class Role {
+public class Role implements GrantedAuthority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(name = "name", nullable = false, unique = true)
     private String name;
 
@@ -23,18 +29,6 @@ public class Role {
         this.name = name;
     }
 
-    public long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     @Override
     public String toString() {
         return "Role {" +
@@ -43,4 +37,8 @@ public class Role {
             "} ";
     }
 
+    @Override
+    public String getAuthority() {
+        return name;
+    }
 }

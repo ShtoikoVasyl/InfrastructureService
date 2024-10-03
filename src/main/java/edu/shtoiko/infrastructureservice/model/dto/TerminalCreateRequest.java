@@ -8,7 +8,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class TerminalRequest {
+public class TerminalCreateRequest {
 
     @NotBlank(message = "Password cannot be empty")
     private String address;
