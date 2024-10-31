@@ -18,3 +18,5 @@ eureka:
   instance:
     prefer-ip-address: true
     ip-address: ${EXTERNAL_IP}
+    metadata-map:
+      terminalMaintenancePort: ${TERMINAL_SERVER_PORT}
